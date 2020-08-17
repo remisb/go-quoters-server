@@ -6,7 +6,6 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/pkg/errors"
-	"github.com/remisb/go-quoters-server/server"
 	"net/http"
 	"os"
 	"os/signal"
@@ -116,7 +115,7 @@ func startAPIServer(cfg Config,
 	// processing should be stopped.
 	r.Use(middleware.Timeout(60 * time.Second))
 
-	r.Get("/info", server.InfoHandler)
+	r.Get("/info", infoHandler)
 
 	r.Get("/api/quote", getQuotesListHandler)
 	r.Get("/api/quote/random", getRandomQuoteHandler)

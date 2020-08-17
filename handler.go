@@ -15,6 +15,10 @@ func init() {
 	randomized = rand.New(randSource)
 }
 
+func infoHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Quoters Service (c) 2020 Remis B"))
+}
+
 func getQuotesListHandler(w http.ResponseWriter, r *http.Request) {
 	quotes, err := getQuotes()
 	if err != nil {
