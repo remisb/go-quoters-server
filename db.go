@@ -9,39 +9,21 @@ import (
 
 // Config struct is used to to store db connection settings.
 type DbConfig struct {
-	Host       string
-	Port       string
-	User       string
-	Password   string
-	Name       string
-	DisableTLS bool
+	Host             string
+	Port             string
+	User             string
+	Password         string
+	Name             string
+	DisableTLS       bool
+	connectionString string
 }
 
-func OpenDb(dbCfg DbConfig) (*sqlx.DB, error) {
-	// Define SSL mode.
-	//sslMode := "require"
-	//if cfg.DisableTLS {
-	//	sslMode = "disable"
-	//}
+func InitDb(dbCfg *DbConfig) {
+	dbCfg.connectionString = mysqlConnectString(*dbCfg)
+}
 
-	// Query parameters.
-	//q := make(url.Values)
-	//q.Set("sslmode", sslMode)
-	//q.Set("timezone", "utc")
-
-	// Construct url.
-	//u := url.URL{
-	//	Scheme:   "mysql",
-	//	User:     url.UserPassword(dbCfg.User, dbCfg.Password),
-	//	Host:     dbCfg.Host,
-	//	Path:     dbCfg.Name,
-	//	RawQuery: q.Encode(),
-	//}
-
-	//s := u.String()
-	s := mysqlConnectString(dbCfg)
-	//s :=  "root:@(localhost:3306)/quoter"
-	return sqlx.Open("mysql", s)
+func (db DbConfig) Open() (*sqlx.DB, error) {
+	return sqlx.Open("mysql", db.connectionString)
 }
 
 func mysqlConnectString(config DbConfig) string {

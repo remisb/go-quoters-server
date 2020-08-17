@@ -3,6 +3,7 @@ module github.com/remisb/go-quoters-server
 go 1.15
 
 replace github.com/remisb/go-quoters-server/server => ./server
+replace github.com/remisb/go-quoters-server/web => ./web
 
 require (
 	github.com/go-chi/chi v4.1.2+incompatible

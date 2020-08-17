@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 	"github.com/remisb/go-quoters-server/server"
 	"net/http"
@@ -15,6 +14,8 @@ import (
 	"syscall"
 	"time"
 )
+
+var dbconn *DbConfig
 
 // SrvConfig has server configuration settings.
 type SrvConfig struct {
@@ -54,6 +55,7 @@ func main() {
 		os.Exit(1)
 	}
 
+
 	if err := startAPIServerAndWait(config); err != nil {
 		Sugar.Errorf("error on starting api server, error :", err)
 		os.Exit(1)
@@ -75,14 +77,14 @@ func NewConfig() Config {
 }
 
 func startAPIServerAndWait(config Config) error {
-	dbx, err := startDatabase(config.Db)
+	err := startDatabase(&config.Db)
 	if err != nil {
 		return err
 	}
 
+	dbconn = &config.Db
 	defer func() {
 		Sugar.Infof("main : Database Stopping : %s", config.Db.Host)
-		dbx.Close()
 	}()
 
 	// Make a channel to listen for an interrupt or terminate signal from the OS.
@@ -94,11 +96,11 @@ func startAPIServerAndWait(config Config) error {
 	// buffered channel so the goroutine can exit if we don't collect this error.
 	serverErrors := make(chan error, 1)
 
-	apiServer := startAPIServer(config, dbx, shutdown, serverErrors)
+	apiServer := startAPIServer(config, shutdown, serverErrors)
 	return waitShutdown(config.Server, apiServer, serverErrors, shutdown)
 }
 
-func startAPIServer(cfg Config, dbx *sqlx.DB,
+func startAPIServer(cfg Config,
 	shutdownChan chan os.Signal,
 	serverErrors chan error) *http.Server {
 
@@ -116,6 +118,10 @@ func startAPIServer(cfg Config, dbx *sqlx.DB,
 
 	r.Get("/info", server.InfoHandler)
 
+	r.Get("/api/quote", getQuotesListHandler)
+	r.Get("/api/quote/random", getRandomQuoteHandler)
+	r.Get("/api/quote/{id}", getQuoteHandler)
+
 	api := http.Server{
 		Addr:         cfg.Server.Addr(),
 		Handler:      r,
@@ -131,15 +137,13 @@ func startAPIServer(cfg Config, dbx *sqlx.DB,
 	return &api
 }
 
-func startDatabase(dbConf DbConfig) (*sqlx.DB, error) {
+func startDatabase(dbConf *DbConfig) error {
 	Sugar.Infof("main : Started : Initializing database support")
 
-	dbx, err := OpenDb(dbConf)
-	if err != nil {
-		return nil, errors.Wrap(err, "connecting to db")
-	}
+	InitDb(dbConf)
+	// TODO make test connection
 
-	return dbx, nil
+	return nil
 }
 
 func waitShutdown(serverConf SrvConfig, apiServer *http.Server, serverErrors chan error, shutdown chan os.Signal) error {
