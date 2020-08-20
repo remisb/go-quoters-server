@@ -30,7 +30,7 @@ type SrvConfig struct {
 func NewSrvConfig() SrvConfig {
 	return SrvConfig{
 		Host: "localhost",
-		Port: 8080,
+		Port: 8888,
 		Log: "./quoters.log",
 	}
 }
@@ -66,7 +66,7 @@ func NewConfig() Config {
 		Server: NewSrvConfig(),
 		Db: DbConfig{
 			Host: "localhost",
-			Port: "3306",
+			Port:	 "3306",
 			User: "root",
 			Password: "",
 			Name: "quoter",
