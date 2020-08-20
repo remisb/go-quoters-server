@@ -38,12 +38,14 @@ types:
   /quote:
     type: object
     get:
+      description: Fetch a random quote
       responses:
         200:
           body:
             application/json:
-              type: Quote
+              type: Quote[]
     /random:
+      description: Fetch a random quote
       type: collection
       get:
         responses:
@@ -52,6 +54,7 @@ types:
               application/json:
                 type: Quote
     /{id}:
+      description: Fetch quote id
       type: object
       get:
         responses:
