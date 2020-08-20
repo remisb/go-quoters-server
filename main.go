@@ -27,14 +27,6 @@ type SrvConfig struct {
 	ShutdownTimeout time.Duration
 }
 
-func NewSrvConfig() SrvConfig {
-	return SrvConfig{
-		Host: "localhost",
-		Port: 8888,
-		Log: "./quoters.log",
-	}
-}
-
 // Addr returns server address in the form of Host:Port localhost:8080.
 func (sc SrvConfig) Addr() string {
 	return sc.Host + ":" + strconv.Itoa(sc.Port)
@@ -54,7 +46,6 @@ func main() {
 		os.Exit(1)
 	}
 
-
 	if err := startAPIServerAndWait(config); err != nil {
 		Sugar.Errorf("error on starting api server, error :", err)
 		os.Exit(1)
@@ -65,13 +56,21 @@ func NewConfig() Config {
 	return Config{
 		Server: NewSrvConfig(),
 		Db: DbConfig{
-			Host: "localhost",
-			Port:	 "3306",
-			User: "root",
+			Host:     "localhost",
+			Port:     "3306",
+			User:     "root",
 			Password: "",
-			Name: "quoter",
+			Name:     "quoter",
 		},
 		Args: NewConfigArgs(os.Args),
+	}
+}
+
+func NewSrvConfig() SrvConfig {
+	return SrvConfig{
+		Host: "localhost",
+		Port: 8888,
+		Log:  "./quoters.log",
 	}
 }
 
