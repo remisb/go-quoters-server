@@ -1,0 +1,12 @@
+server:
+  host: localhost
+  port: 8889
+  log: ./quoter.log
+
+db:
+  host: localhost
+  port: 3306
+  user: root
+  password:
+  name: quoter
+  disableTls: true

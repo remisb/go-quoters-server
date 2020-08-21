@@ -9,12 +9,12 @@ import (
 
 // Config struct is used to to store db connection settings.
 type DbConfig struct {
-	Host             string
-	Port             string
-	User             string
-	Password         string
-	Name             string
-	DisableTLS       bool
+	Host             string `yaml:"host"`
+	Port             string `yaml:"port"`
+	User             string `yaml:"user"`
+	Password         string `yaml:"password"`
+	Name             string `yaml:"name"`
+	DisableTLS       bool   `yaml:"disableTls"`
 	connectionString string
 }
 

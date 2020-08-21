@@ -1,6 +1,5 @@
 DROP TABLE IF EXISTS quote;
-CREATE TABLE quote
-(
+CREATE TABLE quote (
     id    int(12) unsigned NOT NULL AUTO_INCREMENT,
     quote varchar(255) NOT NULL,
     PRIMARY KEY (id)

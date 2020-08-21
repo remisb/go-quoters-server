@@ -4,6 +4,25 @@ Project is based on spring boot rest api server from ... and converted to golang
 - Original spring repository: https://github.com/spring-guides/quoters
 - Tutorial: [Building a RESTful quotation service with Spring](https://spring.io/blog/2014/08/21/building-a-restful-quotation-service-with-spring)
 
+## Config file
+
+Sample config file values.
+
+```yaml
+server:
+  host: localhost
+  port: 8889
+  log: ./quoter.log
+
+db:
+  host: localhost
+  port: 3306
+  user: root
+  password:
+  name: quoter
+  disableTls: true
+```
+
 ###### Default config settings:
 
 ```yaml

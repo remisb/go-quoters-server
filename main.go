@@ -6,6 +6,8 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/pkg/errors"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"os/signal"
@@ -18,13 +20,13 @@ var dbconn *DbConfig
 
 // SrvConfig has server configuration settings.
 type SrvConfig struct {
-	Host            string
-	Port            int
-	Log             string
-	DebugHost       string
-	ReadTimeout     time.Duration
-	WriteTimeout    time.Duration
-	ShutdownTimeout time.Duration
+	Host            string        `yaml:"host"`
+	Port            int           `yaml:"port"`
+	Log             string        `yaml:"log"`
+	DebugHost       string        `yaml:"debugHost"`
+	ReadTimeout     time.Duration `yaml:"readTimeout"`
+	WriteTimeout    time.Duration `yaml:"writeTimeout"`
+	ShutdownTimeout time.Duration `yaml:"shutdownTimeout"`
 }
 
 // Addr returns server address in the form of Host:Port localhost:8080.
@@ -34,13 +36,19 @@ func (sc SrvConfig) Addr() string {
 
 // Config structure to store application configuration settings.
 type Config struct {
-	Server SrvConfig
-	Db     DbConfig
+	Server SrvConfig `yaml:"server"`
+	Db     DbConfig  `yaml:"db"`
 	Args   Args
 }
 
 func main() {
-	config := NewConfig()
+	//config := NewConfig()
+	config, err := readConfig("application.yaml")
+	if err != nil {
+		fmt.Printf("error on initLogger err: %s", err)
+		os.Exit(1)
+	}
+
 	if err := initLogger(&config); err != nil {
 		fmt.Printf("error on initLogger err: %s", err)
 		os.Exit(1)
@@ -52,6 +60,16 @@ func main() {
 	}
 }
 
+func readConfig(filename string) (Config, error) {
+	cfg := Config{}
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return cfg, err
+	}
+	err = yaml.Unmarshal(b, &cfg)
+	return cfg, nil
+}
+
 func NewConfig() Config {
 	return Config{
 		Server: NewSrvConfig(),
@@ -59,7 +77,7 @@ func NewConfig() Config {
 			Host:     "localhost",
 			Port:     "3306",
 			User:     "root",
-			Password: "",
+			Password: "root12133",
 			Name:     "quoter",
 		},
 		Args: NewConfigArgs(os.Args),

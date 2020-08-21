@@ -3,6 +3,7 @@ module github.com/remisb/go-quoters-server
 go 1.15
 
 replace github.com/remisb/go-quoters-server/server => ./server
+
 replace github.com/remisb/go-quoters-server/web => ./web
 
 require (
@@ -11,4 +12,5 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/pkg/errors v0.9.1
 	go.uber.org/zap v1.15.0
+	gopkg.in/yaml.v2 v2.2.2
 )
